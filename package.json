@@ -1,0 +1,19 @@
+{
+  "name": "commitment-tracker-svc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "module-alias": "^2.2.3",
+    "mongodb": "^6.6.2",
+    "mongoose": "^8.4.1"
+  }
+}
