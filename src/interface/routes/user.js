@@ -1,7 +1,7 @@
 const express = require('express');
 
-const UserRepository = require('../../domain/repositories/user');
-const UserService = require('../../application/services/user');
+const UserRepository = require('../../packages/user/infrastructure/repositories/user/repository');
+const GetUserUseCase = require('../../packages/user/application/use-cases/get-user');
 
 class UserRoute {
     /**
@@ -49,13 +49,11 @@ class UserRoute {
      */
     async getUserById(req, res) {
         try {
-            // create dto
+            const useCase = GetUserUseCase.create({
+                userRepository: this.userRepository
+            });
 
-            // validate payload
-
-            // excute usecase
-            const userService = new UserService(this.userRepository);
-            const user = await userService.getUserById(req.params.id);
+            const user = await useCase.execute(req.params.id);
             res.json(user);
         } catch (error) {
             res.status(500).json({ error: error.message });

@@ -1,7 +1,7 @@
 // src/server.js
 const express = require('express');
-const DbClient = require('./infrastructure/database/mongo/client');
-const UserRepository = require('./domain/repositories/user');
+const DbClient = require('./packages/common/infrastructure/mongo/client');
+const UserRepository = require('./packages/user/infrastructure/repositories/user/repository');
 const UserRoute = require('./interface/routes/user');
 
 class Server {
