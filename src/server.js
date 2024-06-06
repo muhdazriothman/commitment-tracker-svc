@@ -1,19 +1,26 @@
-// src/server.js
 const express = require('express');
 const DbClient = require('./packages/common/infrastructure/mongo/client');
 const UserRepository = require('./packages/user/infrastructure/repositories/user/repository');
 const UserRoute = require('./interface/routes/user');
+const Logger = require('../src/packages/common/infrastructure/logger/logger');
+
+const {
+    NODE_ENV,
+    PORT
+} = require('./config/env');
 
 class Server {
     /**
      * @param {Object} config
      * @param {string} config.connectionString
      * @param {string} config.database
+     * @param {Logger} config.logger
      */
     constructor(config) {
         const {
             connectionString,
-            database
+            database,
+            logger
         } = config;
 
         this.app = express();
@@ -21,6 +28,7 @@ class Server {
             connectionString: connectionString
         });
         this.database = database;
+        this.logger = logger;
     }
 
     /**
@@ -34,7 +42,8 @@ class Server {
         };
 
         return new Server({
-            connectionString: config.connectionString
+            connectionString: config.connectionString,
+            logger: Logger.create(),
         });
     }
 
@@ -57,8 +66,8 @@ class Server {
 
         userRoute.setupRoutes(this.app);
 
-        this.app.listen(3000, () => {
-            console.log('Server is running on port 3000');
+        this.app.listen(PORT, () => {
+            this.logger.info(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
         });
     }
 }
