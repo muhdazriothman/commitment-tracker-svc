@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const DbClient = require('./packages/common/infrastructure/mongo/client');
 const UserRepository = require('./packages/user/infrastructure/repositories/user/repository');

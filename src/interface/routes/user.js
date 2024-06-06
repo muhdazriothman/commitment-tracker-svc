@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 
 const UserRepository = require('../../packages/user/infrastructure/repositories/user/repository');

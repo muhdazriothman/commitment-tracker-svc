@@ -1,3 +1,5 @@
+'use strict';
+
 const UserRepository = require('../../infrastructure/repositories/user/repository');
 
 class GetUserUseCase {
