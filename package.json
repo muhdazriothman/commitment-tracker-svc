@@ -15,5 +15,11 @@
     "mongodb": "^6.6.2",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.4.0",
+    "mocha": "^10.4.0",
+    "should": "^13.2.3",
+    "sinon": "^18.0.0"
   }
 }
