@@ -4,7 +4,11 @@ const express = require('express');
 const DbClient = require('./packages/common/infrastructure/mongo/client');
 const UserRepository = require('./packages/user/infrastructure/repositories/user/repository');
 const UserRoute = require('./interface/routes/user');
-const Logger = require('../src/packages/common/infrastructure/logger/logger');
+
+const Logger = require('./packages/common/application/logger');
+const {
+    errorHandler
+} = require('../src/packages/common/application/exception');
 
 const {
     NODE_ENV,
@@ -67,6 +71,8 @@ class Server {
         });
 
         userRoute.setupRoutes(this.app);
+
+        this.app.use(errorHandler);
 
         this.app.listen(PORT, () => {
             this.logger.info(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
