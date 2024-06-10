@@ -38,7 +38,7 @@
  * @readonly
  */
 const CommitmentType = {
-    LoanPayment: 'loan payment',
+    LoanPayment: 'loan-payment',
     Rent: 'rent',
     Utility: 'utility',
     Subscription: 'subscription',
