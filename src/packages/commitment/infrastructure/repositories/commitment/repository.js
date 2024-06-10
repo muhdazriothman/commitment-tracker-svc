@@ -54,7 +54,7 @@ class CommitmentRepository {
 
     /**
      * Create a commitment from entity
-     * @param {Commitment} commitment 
+     * @param {Commitment} commitment
      * @returns {import('./schema').CommitmentDO}
      */
     static toDO(commitment) {
@@ -123,7 +123,11 @@ class CommitmentRepository {
                 ignoreUndefined: true
             });
 
-            return CommitmentRepository.toDomain(result.ops[0]);
+            if (!result.acknowledged) {
+                throw new Error('Failed to create commitment');
+            }
+
+            return CommitmentRepository.toDomain(commitmentDO);
         } catch (error) {
             console.error(error);
             throw error;
