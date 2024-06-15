@@ -33,6 +33,12 @@ class UnauthorizedError extends AppError {
     }
 }
 
+class InternalServerError extends AppError {
+    constructor(message = 'Internal server error') {
+        super(message, 500);
+    }
+}
+
 const errorHandler = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
@@ -49,5 +55,6 @@ module.exports = {
     NotFoundError,
     BusinessLogicError,
     UnauthorizedError,
+    InternalServerError,
     errorHandler,
 };
