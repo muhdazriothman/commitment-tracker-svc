@@ -42,31 +42,14 @@ const schema = {
         },
         category: {
             type: 'string',
-            enum: [
-                Commitment.CommitmentCategory.Housing,
-                Commitment.CommitmentCategory.Transportation,
-                Commitment.CommitmentCategory.Food,
-                Commitment.CommitmentCategory.Utilities,
-                Commitment.CommitmentCategory.Clothing,
-                Commitment.CommitmentCategory.MedicalHealthcare,
-                Commitment.CommitmentCategory.Insurance,
-                Commitment.CommitmentCategory.Savings,
-                Commitment.CommitmentCategory.Personal,
-                Commitment.CommitmentCategory.Debt,
-                Commitment.CommitmentCategory.Entertainment,
-                Commitment.CommitmentCategory.Miscellaneous
-            ]
+            enum: Object.values(Commitment.CommitmentCategory)
         },
         amount: {
             type: 'number'
         },
         frequency: {
             type: 'string',
-            enum: [
-                Commitment.FrequencyType.Daily,
-                Commitment.FrequencyType.Weekly,
-                Commitment.FrequencyType.Monthly
-            ]
+            enum: Object.values(Commitment.FrequencyType)
         },
         firstPaymentDate: {
             type: 'string',
@@ -99,7 +82,7 @@ const schema = {
 
 
 class CreateCommitmentDTO {
-    static validate = schema;
+    static validate = ajv.compile(schema);
 
     /**
      * @param {Object} data
@@ -112,7 +95,6 @@ class CreateCommitmentDTO {
      * @param {string} data.frequency
      * @param {string} data.firstPaymentDate
      * @param {string} data.lastPaymentDate
-     * @param {string} data.nextPaymentDate
      * @param {number} data.lastPaymentAmount
      * @param {string} data.notes
      */
@@ -127,7 +109,6 @@ class CreateCommitmentDTO {
         this.frequency = data.frequency;
         this.firstPaymentDate = data.firstPaymentDate;
         this.lastPaymentDate = data.lastPaymentDate;
-        this.nextPaymentDate = data.nextPaymentDate;
         this.lastPaymentAmount = data.lastPaymentAmount;
         this.notes = data.notes;
     }
@@ -141,7 +122,6 @@ class CreateCommitmentDTO {
 
         return new CreateCommitmentDTO(data);
     }
-
 }
 
 module.exports = CreateCommitmentDTO;
