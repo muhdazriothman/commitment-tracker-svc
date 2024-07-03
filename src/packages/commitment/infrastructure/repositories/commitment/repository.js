@@ -38,7 +38,7 @@ class CommitmentRepository {
             database
         } = config;
 
-        return new UserRepository({
+        return new CommitmentRepository({
             collection: dbClient.db(database).collection(CommitmentRepository.collectionName())
 
         });
