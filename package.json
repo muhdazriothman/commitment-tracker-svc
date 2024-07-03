@@ -29,7 +29,8 @@
     "sinon": "^18.0.0"
   },
   "nodemonConfig": {
-    "ignore": ["*.spec.js"],
-    "delay": 2500
+    "ignore": [
+      "*.spec.js"
+    ]
   }
 }
