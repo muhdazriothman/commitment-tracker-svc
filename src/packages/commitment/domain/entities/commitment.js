@@ -111,13 +111,13 @@ class Commitment {
      * @param {CommitmentProps} props
      * @returns {Commitment}
      */
-    static createForLoanPayment(props) {
+    static create(props) {
         const now = new Date();
 
         return new Commitment({
-            id: props.id,
+            id: props.id || null,
             // userId: props.userId,
-            type: CommitmentType.LoanPayment,
+            type: props.type,
             title: props.title,
             description: props.description,
             provider: props.provider,
@@ -127,15 +127,13 @@ class Commitment {
              * Notes for frequency:
              * type: Specifies the type of frequency (e.g., daily, weekly, monthly).
              * interval: Represents how often the commitment occurs within the chosen frequency (e.g., every 2 weeks, every 3 months).
-             * specificDay: If the frequency is weekly or monthly, this field can hold the specific day of the week (e.g., Monday, Tuesday) or day of the month (e.g., 1st, 15th).
-             * specificWeek: If the frequency is monthly, this field specifies the specific week of the month the commitment occurs (e.g., first, second, last).
              */
             frequency: props.frequency,
             firstPaymentDate: props.firstPaymentDate,
             lastPaymentDate: props.lastPaymentDate || null,
-            nextPaymentDate: props.nextPaymentDate,
+            nextPaymentDate: props.nextPaymentDate || null,
             lastPaymentAmount: props.lastPaymentAmount || null,
-            notes: props.notes,
+            notes: props.notes || null,
             isCompleted: props.isCompleted === true,
             createdAt: props.createdAt || now,
             updatedAt: props.updatedAt || now,
