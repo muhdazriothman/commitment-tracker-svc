@@ -2,6 +2,9 @@
 
 const express = require('express');
 
+const Logger = require('../../packages/common/application/logger');
+
+const CommitmentDto = require('../../packages/commitment/application/use-cases/create/dto');
 const CommitmentRepository = require('../../packages/commitment/infrastructure/repositories/commitment/repository');
 const CreateCommitmentUseCase = require('../../packages/commitment/application/use-cases/create/use-case');
 
@@ -9,13 +12,24 @@ class CommitmentRoute {
     /**
      * @param {Object} dependencies
      * @param {CommitmentRepository} dependencies.commitmentRepository
+     * @param {Logger} dependencies.logger
      */
     constructor(dependencies) {
         const {
-            commitmentRepository
+            commitmentRepository,
+            logger
         } = dependencies;
 
+        if (!(commitmentRepository instanceof CommitmentRepository)) {
+            throw new Error('commitmentRepository must be an instance of CommitmentRepository');
+        }
+
+        if (!(logger instanceof Logger)) {
+            throw new Error('logger must be an instance of Logger');
+        }
+
         this.commitmentRepository = commitmentRepository;
+        this.logger = logger;
     }
 
     /**
@@ -30,7 +44,8 @@ class CommitmentRoute {
         } = dependencies;
 
         return new CommitmentRoute({
-            commitmentRepository: commitmentRepository
+            commitmentRepository: commitmentRepository,
+            logger: Logger.create()
         });
     }
 
@@ -49,16 +64,24 @@ class CommitmentRoute {
      * @param {express.Response} res
      * @returns {Promise<void>}
      */
-    async createCommitment(req, res) {
+    async createCommitment(req, res, next) {
         try {
+            this.logger.info('Incoming request to create commitment');
+
             const useCase = CreateCommitmentUseCase.create({
                 commitmentRepository: this.commitmentRepository
             });
 
-            const commitment = await useCase.execute(req.params.id);
-            res.json(user);
+            console.log('req.body', req.body);
+
+            const dto = CommitmentDto.create(req.body);
+
+            const commitment = await useCase.execute(dto);
+
+            res.json(commitment);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            this.logger.error('Unexpected error creating commitment', error);
+            next(error);
         }
     }
 }
