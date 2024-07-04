@@ -18,15 +18,12 @@ class SchemaValidationError extends InvalidPayloadError {
 const ajv = new Ajv();
 addFormats(ajv);
 
-
 const schema = {
     type: 'object',
     properties: {
         type: {
             type: 'string',
-            enum: [
-                Commitment.CommitmentType.LoanPayment
-            ]
+            enum: Object.values(Commitment.CommitmentType)
         },
         // userId: {
         //     type: 'string'
@@ -53,11 +50,11 @@ const schema = {
         },
         firstPaymentDate: {
             type: 'string',
-            format: 'date'
+            format: 'date-time'
         },
         lastPaymentDate: {
             type: 'string',
-            format: 'date'
+            format: 'date-time'
         },
         lastPaymentAmount: {
             type: 'number'
