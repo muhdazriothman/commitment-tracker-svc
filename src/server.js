@@ -1,14 +1,16 @@
 'use strict';
 
 const express = require('express');
+
+const ErrorHandler = require('./packages/common/application/exception-handler')
 const DbClient = require('./packages/common/infrastructure/mongo/client');
 const UserRepository = require('./packages/user/infrastructure/repositories/user/repository');
 const UserRoute = require('./interface/routes/user');
 
+const CommitmentRepository = require('./packages/commitment/infrastructure/repositories/commitment/repository');
+const CommitmentRoute = require('./interface/routes/commitment');
+
 const Logger = require('./packages/common/application/logger');
-const {
-    errorHandler
-} = require('../src/packages/common/application/exception');
 
 const {
     NODE_ENV,
@@ -66,13 +68,26 @@ class Server {
             database: this.database
         });
 
+        const commitmentRepository = CommitmentRepository.create({
+            dbClient: this.dbClient
+        }, {
+            database: this.database
+        });
+
         const userRoute = UserRoute.create({
             userRepository: userRepository
         });
 
-        userRoute.setupRoutes(this.app);
+        const commitmentRoute = CommitmentRoute.create({
+            commitmentRepository: commitmentRepository
+        });
 
-        this.app.use(errorHandler);
+        this.app.use(express.json());
+
+        userRoute.setupRoutes(this.app);
+        commitmentRoute.setupRoutes(this.app);
+
+        this.app.use(ErrorHandler.handle);
 
         this.app.listen(PORT, () => {
             this.logger.info(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
