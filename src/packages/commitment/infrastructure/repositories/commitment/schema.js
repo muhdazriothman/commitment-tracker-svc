@@ -100,14 +100,15 @@ module.exports = {
             description: 'Commitment duration',
             type: 'object',
             properties: {
-                start: {
-                    description: 'Commitment start date',
-                    type: 'date-time'
+                value: {
+                    description: 'Commitment duration value',
+                    type: 'number'
                 },
-                end: {
-                    description: 'Commitment end date',
-                    type: 'date-time'
-                }
+                unitOfTime: {
+                    description: 'Commitment duration unit of time',
+                    type: 'string',
+                    enum: ['days', 'weeks', 'months', 'years']
+                },
             }
         },
         frequency: {
@@ -128,10 +129,10 @@ module.exports = {
         endDate: {
             /**
              * Can be null depending on the commitment type
-             * Recurring: null
-             * One-time: null
+             * installment: null, will be calculated based on the duration, more convenient to calculate the end date based on the duration
+             * One-time: same as start date
              * Debt: Debt end date, most of the time we don't know when the debt will be paid off, just the duration, like making a 3 year loan, in this case end date will be determined by the duration
-             * Savings: Savings target end date
+             * Savings: null, will be calculated based on the duration, more convenient to calculate the end date based on the duration
              */
             description: 'Commitment last payment date',
             type: 'date-time'
@@ -140,9 +141,10 @@ module.exports = {
             description: 'Commitment notes',
             type: 'string'
         },
-        isCompleted: {
-            description: 'True if commitment is completed. False otherwise',
-            type: 'boolean'
+        status: {
+            description: 'Commitment status',
+            type: 'string',
+            enum: ['active', 'completed', 'cancelled']
         },
         createdAt: {
             description: 'Commitment created on date',
