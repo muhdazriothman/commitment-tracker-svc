@@ -27,17 +27,20 @@ module.exports = {
     type: 'object',
     required: [
         '_id',
-        'propertyId',
+        'userId',
         'type',
-        'credentials',
         'name',
-        'slug',
         'description',
-        'priority',
-        'enabled',
-        'availableTools',
-        'unsupportedTools',
-        'enabledTools',
+        'provider',
+        'category',
+        'amount',
+        'amountPaid',
+        'duration',
+        'frequency',
+        'startDate',
+        'endDate',
+        'notes',
+        'isCompleted',
         'createdAt',
         'updatedAt',
         'deleted',
@@ -54,10 +57,17 @@ module.exports = {
         },
         type: {
             description: 'Commitment type',
-            type: 'string'
+            type: 'string',
+            enum: ['installment', 'one-time', 'debt', 'savings']
+            /**
+             * Installment: Commitment that occurs on a regular basis - e.g. rent, utility bills
+             * One-time: Commitment that occurs only once - e.g. buying a new phone
+             * Debt: Commitment that represents a debt - e.g. credit card debt
+             * Savings: Commitment that represents a saving goal - e.g. saving for a new car
+             */
         },
-        title: {
-            description: 'Commitment title',
+        name: {
+            description: 'Commitment name',
             type: 'string'
         },
         description: {
@@ -67,34 +77,64 @@ module.exports = {
         provider: {
             description: 'Commitment provider',
             type: 'string'
+            /**
+             * Represents the entity that provides the commitment - e.g. bank, utility company, landlord
+             */
         },
         category: {
             description: 'Commitment category',
             type: 'string'
+            /**
+             * Represents the category of the commitment - e.g. housing, transportation, food, utilities, clothing, medical/healthcare, insurance, savings, personal, debt, entertainment, miscellaneous
+             */
         },
         amount: {
             description: 'Commitment amount',
             type: 'number'
         },
+        amountPaid: {
+            description: 'Commitment amount paid',
+            type: 'number'
+        },
+        duration: {
+            description: 'Commitment duration',
+            type: 'object',
+            properties: {
+                start: {
+                    description: 'Commitment start date',
+                    type: 'date-time'
+                },
+                end: {
+                    description: 'Commitment end date',
+                    type: 'date-time'
+                }
+            }
+        },
         frequency: {
             description: 'Commitment frequency',
             type: 'string'
+            /**
+             * Represents the frequency of the commitment - e.g. daily, weekly, monthly
+             * Installment: daily, weekly, monthly
+             * One-time: null
+             * Debt: daily, weekly, monthly
+             * Savings: daily, weekly, monthly
+             */
         },
-        firstPaymentDate: {
+        startDate: {
             description: 'Commitment first payment date',
             type: 'date-time'
         },
-        lastPaymentDate: {
+        endDate: {
+            /**
+             * Can be null depending on the commitment type
+             * Recurring: null
+             * One-time: null
+             * Debt: Debt end date, most of the time we don't know when the debt will be paid off, just the duration, like making a 3 year loan, in this case end date will be determined by the duration
+             * Savings: Savings target end date
+             */
             description: 'Commitment last payment date',
             type: 'date-time'
-        },
-        nextPaymentDate: {
-            description: 'Commitment next payment date',
-            type: 'date-time'
-        },
-        lastPaymentAmount: {
-            description: 'Commitment last payment amount',
-            type: 'number'
         },
         notes: {
             description: 'Commitment notes',
