@@ -40,7 +40,7 @@ module.exports = {
         'startDate',
         'endDate',
         'notes',
-        'isCompleted',
+        'status',
         'createdAt',
         'updatedAt',
         'deleted',
