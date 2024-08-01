@@ -38,7 +38,7 @@
  * @readonly
  */
 const CommitmentType = {
-    LoanPayment: 'loan-payment',
+    Loan: 'loan',
     Rent: 'rent',
     Utility: 'utility',
     Subscription: 'subscription',
@@ -62,7 +62,8 @@ const CommitmentCategory = {
     Personal: 'personal',
     Debt: 'debt',
     Entertainment: 'entertainment',
-    Miscellaneous: 'miscellaneous'
+    Miscellaneous: 'miscellaneous',
+    Vehicle: 'vehicle',
 };
 
 /**
@@ -86,20 +87,21 @@ class Commitment {
      */
     constructor(props) {
         this.id = props.id;
+        // TODO: To ennable userId when authentication is implemented
         // this.userId = props.userId;
         this.type = props.type;
-        this.title = props.title;
+        this.name = props.name;
         this.description = props.description;
         this.provider = props.provider;
         this.category = props.category;
         this.amount = props.amount;
+        this.amountPaid = props.amountPaid;
+        this.duration = props.duration;
         this.frequency = props.frequency; // 'daily', 'weekly', 'bi-weekly', 'monthly', 'bi-monthly', 'quarterly', 'bi-annually', 'annually'
-        this.firstPaymentDate = props.firstPaymentDate;
-        this.lastPaymentDate = props.lastPaymentDate;
-        this.nextPaymentDate = props.nextPaymentDate;
-        this.lastPaymentAmount = props.lastPaymentAmount;
+        this.startDate = props.startDate;
+        this.endDate = props.endDate;
         this.notes = props.notes;
-        this.isCompleted = props.isCompleted;
+        this.status = props.status;
         this.createdAt = props.createdAt;
         this.updatedAt = props.updatedAt;
         this.deleted = props.deleted;
@@ -116,25 +118,21 @@ class Commitment {
 
         return new Commitment({
             id: props.id || null,
+            // TODO: To ennable userId when authentication is implemented
             // userId: props.userId,
             type: props.type,
-            title: props.title,
+            name: props.name,
             description: props.description,
             provider: props.provider,
             category: props.category,
             amount: props.amount,
-            /**
-             * Notes for frequency:
-             * type: Specifies the type of frequency (e.g., daily, weekly, monthly).
-             * interval: Represents how often the commitment occurs within the chosen frequency (e.g., every 2 weeks, every 3 months).
-             */
+            amountPaid: props.amountPaid,
+            duration: props.duration,
             frequency: props.frequency,
-            firstPaymentDate: props.firstPaymentDate,
-            lastPaymentDate: props.lastPaymentDate || null,
-            nextPaymentDate: props.nextPaymentDate || null,
-            lastPaymentAmount: props.lastPaymentAmount || null,
+            startDate: props.startDate,
+            endDate: props.endDate || null,
             notes: props.notes || null,
-            isCompleted: props.isCompleted === true,
+            status: props.status || 'active',
             createdAt: props.createdAt || now,
             updatedAt: props.updatedAt || now,
             deleted: props.deleted === true,
