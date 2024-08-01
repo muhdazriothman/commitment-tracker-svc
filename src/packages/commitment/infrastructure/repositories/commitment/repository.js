@@ -60,21 +60,21 @@ class CommitmentRepository {
     static toDO(commitment) {
         return {
             _id: ObjectId.createFromTime(Date.now()),
+            // TODO: Enable userId when authentication is implemented
             // userId : commitment.userId,
             type: commitment.type,
-            title: commitment.title,
+            name: commitment.name,
             description: commitment.description,
             provider: commitment.provider,
             category: commitment.category,
             amount: commitment.amount,
+            amountPaid: commitment.amountPaid,
+            duration: commitment.duration,
             frequency: commitment.frequency,
-            firstPaymentDate: commitment.firstPaymentDate,
-            lastPaymentDate: commitment.lastPaymentDate,
-            nextPaymentDate: commitment.nextPaymentDate,
-            lastPaymentAmount: commitment.lastPaymentAmount,
+            startDate: commitment.startDate,
+            endDate: commitment.endDate,
             notes: commitment.notes,
-            reminder: commitment.reminder,
-            isCompleted: commitment.isCompleted,
+            status: commitment.status,
             createdAt: commitment.createdAt,
             updatedAt: commitment.updatedAt,
             deleted: false,
@@ -88,25 +88,27 @@ class CommitmentRepository {
      * @returns {Commitment}
      */
     static toDomain(document) {
-        return new Commitment({
+        return Commitment.create({
             id: document._id.toString(),
+            // TODO: Enable userId when authentication is implemented
             // userId : commitment.userId,
             type: document.type,
-            title: document.title,
+            name: document.name,
             description: document.description,
             provider: document.provider,
             category: document.category,
             amount: document.amount,
+            amountPaid: document.amountPaid,
+            duration: document.duration,
             frequency: document.frequency,
-            firstPaymentDate: document.firstPaymentDate,
-            lastPaymentDate: document.lastPaymentDate,
-            nextPaymentDate: document.nextPaymentDate,
-            lastPaymentAmount: document.lastPaymentAmount,
+            startDate: document.startDate,
+            endDate: document.endDate,
             notes: document.notes,
-            reminder: document.reminder,
-            isCompleted: document.isCompleted,
+            status: document.status,
             createdAt: document.createdAt,
-            updatedAt: document.updatedAt
+            updatedAt: document.updatedAt,
+            deleted: document.deleted,
+            deletedAt: document.deletedAt
         });
     }
 

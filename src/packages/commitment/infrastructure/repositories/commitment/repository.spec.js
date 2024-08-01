@@ -1,10 +1,17 @@
 'use strict';
 
-const { MongoClient } = require('mongodb');
+const sinon = require('sinon');
+const should = require('should');
+
+const {
+    MongoClient
+} = require('mongodb');
 const CommitmentRepository = require('./repository');
 const Commitment = require('../../../domain/entities/commitment');
 
 describe('src/packages/commitment/infrastructure/repositories/commitment/repository.spec.js', () => {
+    const sandbox = sinon.createSandbox();
+
     let client;
     let db;
 
@@ -21,56 +28,79 @@ describe('src/packages/commitment/infrastructure/repositories/commitment/reposit
         });
     });
 
+    beforeEach(async () => {
+        await repository.collection.deleteMany({});
+    });
+
     after(async () => {
         await client.close();
     });
 
     afterEach(async () => {
-        await repository.collection.deleteMany({});
+        sandbox.restore();
     });
 
-    it('should create a new commitment', async () => {
-        const commitment = new Commitment({
-            type: 'loan',
-            title: 'Car Loan',
-            description: 'Monthly car loan payment',
-            provider: 'Bank',
-            category: 'Vehicle',
-            amount: 300.00,
-            frequency: 'monthly',
-            firstPaymentDate: new Date('2022-01-01'),
-            lastPaymentDate: null,
-            nextPaymentDate: new Date('2022-02-01'),
-            lastPaymentAmount: 300.00,
-            notes: 'This is a test note',
-            reminder: true,
-            isCompleted: false,
-            createdAt: new Date(),
-            updatedAt: new Date()
+    describe('#create', async () => {
+        beforeEach(async function () {
+            sandbox.spy(CommitmentRepository, 'toDO');
+            sandbox.spy(CommitmentRepository, 'toDomain');
         });
 
-        const result = await repository.create(commitment);
+        it('should create a new commitment', async () => {
+            const commitment = Commitment.create({
+                type: 'loan',
+                name: 'Car Loan',
+                description: 'Monthly car loan payment',
+                provider: 'Bank',
+                category: 'Vehicle',
+                amount: 300.00,
+                amountPaid: 0.00,
+                duration: {
+                    months: 60,
+                    unitOfTime: 'months'
+                },
+                frequency: 'monthly',
+                startDate: new Date('2022-01-01'),
+                endDate: new Date('2024-12-31'),
+                notes: 'This is a test note',
+                status: 'active',
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
 
-        should(result).be.Object();
-        should(result._id).be.equal(commitment.id);
-        should(result.type).be.equal(commitment.type);
-        should(result.title).be.equal(commitment.title);
-        should(result.description).be.equal(commitment.description);
-        should(result.provider).be.equal(commitment.provider);
-        should(result.category).be.equal(commitment.category);
-        should(result.amount).be.equal(commitment.amount);
-        should(result.frequency).be.equal(commitment.frequency);
-        should(result.firstPaymentDate).be.eql(commitment.firstPaymentDate);
-        should(result.lastPaymentDate).be.eql(commitment.lastPaymentDate);
-        should(result.nextPaymentDate).be.eql(commitment.nextPaymentDate);
-        should(result.lastPaymentAmount).be.equal(commitment.lastPaymentAmount);
-        should(result.notes).be.equal(commitment.notes);
-        should(result.reminder).be.equal(commitment.reminder);
-        should(result.isCompleted).be.equal(commitment.isCompleted);
-        should(result.createdAt).be.eql(commitment.createdAt);
-        should(result.updatedAt).be.eql(commitment.updatedAt);
-        should(result.deleted).be.false();
-        should(result.deletedAt).be.null();
+            const result = await repository.create(commitment);
 
+            const dbValues = CommitmentRepository.toDO.getCall(0).returnValue;
+
+            should(CommitmentRepository.toDO.calledOnce).be.true();
+            should(CommitmentRepository.toDO.getCall(0).args.length).equal(1);
+            should(CommitmentRepository.toDO.getCall(0).args[0]).equal(commitment);
+
+
+            should(CommitmentRepository.toDomain.calledOnce).be.true();
+            should(CommitmentRepository.toDomain.getCall(0).args.length).equal(1);
+            should(CommitmentRepository.toDomain.getCall(0).args[0]).equal(dbValues);
+
+            should(result).be.instanceOf(Commitment);
+            should(result.id).be.eql(dbValues._id.toString());
+            // TODO: Enable userId when authentication is implemented
+            // should(result.userId).be.eql(dbValues.userId);
+            should(result.type).be.equal(dbValues.type);
+            should(result.name).be.equal(dbValues.name);
+            should(result.description).be.equal(dbValues.description);
+            should(result.provider).be.equal(dbValues.provider);
+            should(result.category).be.equal(dbValues.category);
+            should(result.amount).be.equal(dbValues.amount);
+            should(result.amountPaid).be.equal(dbValues.amountPaid);
+            should(result.duration).be.eql(dbValues.duration);
+            should(result.frequency).be.equal(dbValues.frequency);
+            should(result.startDate).be.eql(dbValues.startDate);
+            should(result.endDate).be.eql(dbValues.endDate);
+            should(result.notes).be.equal(dbValues.notes);
+            should(result.createdAt).be.eql(dbValues.createdAt);
+            should(result.updatedAt).be.eql(dbValues.updatedAt);
+            should(result.deleted).be.false();
+            should(result.deletedAt).be.null();
+        });
     });
 });
